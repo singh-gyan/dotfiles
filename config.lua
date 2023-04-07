@@ -7,7 +7,8 @@
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.relativenumber = true
-
+vim.opt.showcmd = true
+-- vim.opt.foldmethod = "indent"
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
@@ -21,20 +22,24 @@ lvim.format_on_save = {
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 lvim.leader = "space"
 -- add your own keymapping
+lvim.keys.normal_mode["s"] = ":HopLineStart<CR>"
 lvim.keys.normal_mode["dd"] = '"_dd'
 lvim.keys.normal_mode["d"] = '"_d'
-lvim.keys.insert_mode["jk"] = "<ESC>"
+lvim.keys.visual_mode["d"] = '"_d'
+lvim.keys.insert_mode["kj"] = "<ESC>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 
+lvim.keys.normal_mode["<C-c>"] = ":cd ~/Desktop/girnarsoft-fs-rupyy<CR>"
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<C-l>"] = ":BufferLineMoveNext<CR>"
 lvim.keys.normal_mode["<C-h>"] = ":BufferLineMovePrev<CR>"
 lvim.keys.normal_mode["<A-l>"] = ":BufferLineCloseRight<CR>"
 lvim.keys.normal_mode["<A-h>"] = ":BufferLineCloseLeft<CR>"
-lvim.keys.normal_mode["<leader>ff"] = ":Telescope find_files<CR>"
+-- lvim.keys.normal_mode["<leader>ff"] = ":Telescope find_files<CR>"
 lvim.keys.normal_mode["<leader>fg"] = ":Telescope live_grep<CR>"
 lvim.keys.normal_mode["<leader>P"] = ":'<,'>lua vim.lsp.buf.format()<CR>"
+lvim.keys.normal_mode["<C->"] = ":ToggleTerm size=40 dir=~/Desktop direction=horizontal"
 
 -- -- Use which-key to add extra bindings with the leader-key prefix
 -- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
