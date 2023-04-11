@@ -2,43 +2,53 @@
  THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
  `lvim` is the global options object
 ]]
-
 -- vim options
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.opt.showcmd = true
--- vim.opt.foldmethod = "indent"
+vim.opt.acd = false
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.wrapmargin = 2
+vim.opt.showbreak = "↳"
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
 	enabled = true,
-	pattern = "*.lua",
+	pattern = "*.lua", --Add more file types to format on save
 	timeout = 1000,
 }
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
+
 lvim.leader = "space"
 -- add your own keymapping
-lvim.keys.normal_mode["s"] = ":HopLineStart<CR>"
-lvim.keys.normal_mode["dd"] = '"_dd'
-lvim.keys.normal_mode["d"] = '"_d'
-lvim.keys.visual_mode["d"] = '"_d'
+-- lvim.keys.visual_mode["kj"] = "<ESC>"
 lvim.keys.insert_mode["kj"] = "<ESC>"
+lvim.keys.normal_mode["dd"] = '"_dd'
+lvim.keys.normal_mode["D"] = '"_D'
+lvim.keys.visual_mode["d"] = '"_d'
+lvim.keys.normal_mode["d"] = '"_d'
+lvim.keys.normal_mode["j"] = "gj"
+lvim.keys.normal_mode["k"] = "gk"
+lvim.keys.normal_mode["<leader>op"] = "o<ESC>p"
+lvim.keys.normal_mode["<leader>Op"] = "O<ESC>p"
+lvim.keys.normal_mode["<leader>o"] = "o<ESC>"
+lvim.keys.normal_mode["<leader>O"] = "O<ESC>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+lvim.keys.normal_mode["<C-e>"] = ":e!<cr>"
 
-lvim.keys.normal_mode["<C-c>"] = ":cd ~/Desktop/girnarsoft-fs-rupyy<CR>"
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
-lvim.keys.normal_mode["<C-l>"] = ":BufferLineMoveNext<CR>"
-lvim.keys.normal_mode["<C-h>"] = ":BufferLineMovePrev<CR>"
 lvim.keys.normal_mode["<A-l>"] = ":BufferLineCloseRight<CR>"
 lvim.keys.normal_mode["<A-h>"] = ":BufferLineCloseLeft<CR>"
--- lvim.keys.normal_mode["<leader>ff"] = ":Telescope find_files<CR>"
+lvim.keys.normal_mode["<leader>ff"] = ":Telescope find_files<CR>"
 lvim.keys.normal_mode["<leader>fg"] = ":Telescope live_grep<CR>"
-lvim.keys.normal_mode["<leader>P"] = ":'<,'>lua vim.lsp.buf.format()<CR>"
+lvim.keys.normal_mode["<leader>p"] = ":lua vim.lsp.buf.format()<CR>"
 lvim.keys.normal_mode["<C->"] = ":ToggleTerm size=40 dir=~/Desktop direction=horizontal"
 
 -- -- Use which-key to add extra bindings with the leader-key prefix
@@ -57,6 +67,7 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
 
+lvim.builtin.treesitter.indent.enable = true
 -- lvim.builtin.treesitter.ignore_install = { "haskell" }
 
 -- -- always installed on startup, useful for parsers without a strict filetype
@@ -99,6 +110,57 @@ formatters.setup({
 		filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "css", "scss" },
 	},
 })
+
+lvim.builtin.telescope.pickers.find_files.theme = "ivy"
+lvim.builtin.telescope.pickers.find_files.find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
+
+--Bufferline Tab
+lvim.builtin.bufferline.options.separator_style = "slant"
+
+--Terminal Config
+lvim.builtin["terminal"].direction = "tab"
+lvim.builtin["terminal"].exces = {
+	{ nil, "<M-1>", "Tab Terminal", "tab", 0.3 },
+	{ nil, "<M-2>", "Vertical Terminal", "vertical", 0.4 },
+	{ nil, "<M-3>", "Float Terminal", "float", nil },
+}
+
+--Override Lualine config
+lvim.builtin.lualine.sections.lualine_a = { "mode" }
+lvim.builtin.lualine.sections.lualine_x = { "filetype" }
+lvim.builtin.lualine.options.section_separators = { left = "", right = "" }
+-- vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
+local function diff_source()
+	local gitsigns = vim.b.gitsigns_status_dict
+	if gitsigns then
+		return {
+			added = gitsigns.added,
+			modified = gitsigns.changed,
+			removed = gitsigns.removed,
+		}
+	end
+end
+local colors = require("lvim.core.lualine.colors")
+local git_blame = require("gitblame")
+lvim.builtin.lualine.sections.lualine_c = {
+	{
+		"diff",
+		source = diff_source,
+		symbols = {
+			added = lvim.icons.git.LineAdded .. " ",
+			modified = lvim.icons.git.LineModified .. " ",
+			removed = lvim.icons.git.LineRemoved .. " ",
+		},
+		padding = { left = 2, right = 1 },
+		diff_color = {
+			added = { fg = colors.green },
+			modified = { fg = colors.yellow },
+			removed = { fg = colors.red },
+		},
+		cond = nil,
+	},
+	{ git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available }, --Added Git blame to the middle of lualine
+}
 -- local linters = require "lvim.lsp.null-ls.linters"
 -- linters.setup {
 --   { command = "flake8", filetypes = { "python" } },
@@ -120,8 +182,8 @@ lvim.plugins = {
 		event = "BufRead",
 		config = function()
 			require("hop").setup()
-			vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
-			vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
+			vim.api.nvim_set_keymap("n", "S", ":HopLineStart<cr>", { silent = true })
+			vim.api.nvim_set_keymap("n", "s", ":HopWord<cr>", { silent = true })
 		end,
 	},
 	{
@@ -134,18 +196,15 @@ lvim.plugins = {
 	{ "sainnhe/gruvbox-material" },
 	{
 		"tpope/vim-surround",
-
-		-- make sure to change the value of `timeoutlen` if it's not triggering correctly, see https://github.com/tpope/vim-surround/issues/117
-		-- setup = function()
-		-- pretti vim.o.timeoutlen = 500
-		-- end
 	},
 	{
 		"f-person/git-blame.nvim",
 		event = "BufRead",
 		config = function()
 			vim.cmd("highlight default link gitblame SpecialComment")
-			vim.g.gitblame_enabled = 0
+			vim.g.gitblame_enabled = 1
+			vim.g.gitblame_message_when_not_committed = "  Uncommited Changes"
+			vim.g.gitblame_date_format = "%r"
 		end,
 	},
 	{
@@ -157,8 +216,15 @@ lvim.plugins = {
 	{ "terryma/vim-multiple-cursors" },
 
 	{ "windwp/nvim-ts-autotag" },
+	{ "ethanholz/nvim-lastplace" },
+	{
+		"akinsho/git-conflict.nvim",
+		version = "*",
+		config = function()
+			require("git-conflict").setup()
+		end,
+	},
 }
-
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
 -- vim.api.nvim_create_autocmd("FileType", {
 --   pattern = "zsh",
