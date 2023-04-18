@@ -10,8 +10,8 @@ vim.opt.showcmd = true
 vim.opt.acd = false
 vim.opt.wrap = true
 vim.opt.linebreak = true
-vim.opt.wrapmargin = 2
-vim.opt.showbreak = "↳"
+vim.opt.breakindent = true
+vim.opt.cpoptions = "aABceFsn_"
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
@@ -35,22 +35,27 @@ lvim.keys.visual_mode["d"] = '"_d'
 lvim.keys.normal_mode["d"] = '"_d'
 lvim.keys.normal_mode["j"] = "gj"
 lvim.keys.normal_mode["k"] = "gk"
-lvim.keys.normal_mode["<leader>op"] = "o<ESC>p"
-lvim.keys.normal_mode["<leader>Op"] = "O<ESC>p"
-lvim.keys.normal_mode["<leader>o"] = "o<ESC>"
-lvim.keys.normal_mode["<leader>O"] = "O<ESC>"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-e>"] = ":e!<cr>"
 
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
-lvim.keys.normal_mode["<A-l>"] = ":BufferLineCloseRight<CR>"
-lvim.keys.normal_mode["<A-h>"] = ":BufferLineCloseLeft<CR>"
-lvim.keys.normal_mode["<leader>ff"] = ":Telescope find_files<CR>"
-lvim.keys.normal_mode["<leader>fg"] = ":Telescope live_grep<CR>"
-lvim.keys.normal_mode["<leader>p"] = ":lua vim.lsp.buf.format()<CR>"
-lvim.keys.normal_mode["<C->"] = ":ToggleTerm size=40 dir=~/Desktop direction=horizontal"
-
+lvim.keys.normal_mode["<A-l>"] = ":BufferLineMoveNext<CR>"
+lvim.keys.normal_mode["<A-h>"] = ":BufferLineMovePrev<CR>"
+lvim.keys.normal_mode["<A-,>"] = "A,<ESC>"
+lvim.keys.normal_mode["<A-.>"] = "A.<ESC>"
+lvim.keys.normal_mode["<leader>Q"] = ":lua vim.lsp.buf.format()<CR>"
+lvim.keys.visual_mode["<leader>Q"] = ":lua vim.lsp.buf.range_formatting()<CR>"
+lvim.keys.normal_mode["<leader>'p"] = '"+p:s/\n/ /g<CR>'
+lvim.keys.normal_mode["<leader>p"] = "o<ESC>p"
+lvim.keys.normal_mode["<leader>P"] = "O<ESC>p"
+lvim.keys.normal_mode["<leader>o"] = "o<ESC>"
+lvim.keys.normal_mode["<leader>O"] = "O<ESC>"
+lvim.keys.normal_mode["<leader>u"] = ":UndotreeToggle<CR>"
+lvim.keys.normal_mode["<leader>bj"] = ':lua require("harpoon.ui").nav_next()<CR>'
+lvim.keys.normal_mode["<leader>bk"] = ':lua require("harpoon.ui").nav_prev()<CR>'
+lvim.keys.normal_mode["<leader>bt"] = ':lua require("harpoon.ui").toggle_quick_menu()<CR>'
+lvim.keys.normal_mode["<leader>ba"] = ':lua require("harpoon.ui").toggle_quick_menu()<CR>'
 -- -- Use which-key to add extra bindings with the leader-key prefix
 -- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
 -- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -62,7 +67,9 @@ lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
+lvim.builtin.nvimtree.setup.update_cwd = false
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.nvimtree.setup.git.ignore = true
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -111,6 +118,47 @@ formatters.setup({
 	},
 })
 
+lvim.builtin.treesitter.textobjects = {
+	move = {
+		enable = true,
+		set_jumps = true, -- whether to set jumps in the jumplist
+		goto_next_start = {
+			["]m"] = "@function.outer",
+			["]]"] = { query = "@class.outer", desc = "Next class start" },
+			--
+			-- You can use regex matching (i.e. lua pattern) and/or pass a list in a "query" key to group multiple queires.
+			["]o"] = "@loop.*",
+			-- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
+			--
+			-- You can pass a query group to use query from `queries/<lang>/<query_group>.scm file in your runtime path.
+			-- Below example nvim-treesitter's `locals.scm` and `folds.scm`. They also provide highlights.scm and indent.scm.
+			["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
+			["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
+		},
+		goto_next_end = {
+			["]M"] = "@function.outer",
+			["]["] = "@class.outer",
+		},
+		goto_previous_start = {
+			["[m"] = "@function.outer",
+			["[["] = "@class.outer",
+		},
+		goto_previous_end = {
+			["[M"] = "@function.outer",
+			["[]"] = "@class.outer",
+		},
+		-- Below will go to either the start or the end, whichever is closer.
+		-- Use if you want more granular movements
+		-- Make it even more gradual by adding multiple queries and regex.
+		goto_next = {
+			["]d"] = "@conditional.outer",
+		},
+		goto_previous = {
+			["[d"] = "@conditional.outer",
+		},
+	},
+}
+
 lvim.builtin.telescope.pickers.find_files.theme = "ivy"
 lvim.builtin.telescope.pickers.find_files.find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
 
@@ -127,9 +175,10 @@ lvim.builtin["terminal"].exces = {
 
 --Override Lualine config
 lvim.builtin.lualine.sections.lualine_a = { "mode" }
+lvim.builtin.lualine.sections.lualine_a = { "mode" }
 lvim.builtin.lualine.sections.lualine_x = { "filetype" }
 lvim.builtin.lualine.options.section_separators = { left = "", right = "" }
--- vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
+vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
 local function diff_source()
 	local gitsigns = vim.b.gitsigns_status_dict
 	if gitsigns then
@@ -161,14 +210,59 @@ lvim.builtin.lualine.sections.lualine_c = {
 	},
 	{ git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available }, --Added Git blame to the middle of lualine
 }
+lvim.builtin.treesitter.incremental_selection = {
+	enable = true,
+	keymaps = {
+		init_selection = "<c-space>",
+		node_incremental = "<c-space>",
+		scope_incremental = "<c-s>",
+		node_decremental = "<m-space>",
+	},
+}
+
+lvim.builtin.treesitter.autotag = {
+	enable = true,
+}
+
+lvim.builtin.nvimtree.setup.actions.change_dir.enable = false
+
+require("lspconfig").tsserver.setup({
+	settings = {
+		completions = {
+			completeFunctionCalls = true,
+		},
+	},
+})
+
+function copy_diagnostic_to_clipboard()
+	local vim = vim
+	local diagnostics = vim.diagnostic.get(0)
+	local current_line = vim.fn.line(".")
+	local current_file = vim.fn.expand("%:p")
+
+	local lines = {}
+	for _, diagnostic in ipairs(diagnostics) do
+		-- if diagnostic.lnum == current_line and diagnostic.col <= vim.fn.col(".") then
+		table.insert(lines, string.format("%s", diagnostic.message))
+		-- end
+	end
+	if #lines > 0 then
+		local loclist = vim.lsp.util.locations_to_items(lines)
+		vim.lsp.util.set_loclist({ items = loclist, copytext = table.concat(lines, "\n") })
+		vim.cmd("echo 'Copied diagnostic to clipboard'")
+	else
+		vim.cmd("echo 'No diagnostics found'")
+	end
+end
+
+lvim.keys.normal_mode["<Leader>cy"] = ":lua copy_diagnostic_to_clipboard()<CR>"
 -- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
+-- linters.setup [ --   { command = "flake8", filetypes = { "python" } },
 --   {
 --     command = "shellcheck",
 --     args = { "--severity", "warning" },
 --   },
--- }
+-- ]
 
 -- require("nvim-ts-autotag").setup()
 -- -- Additional Plugins <https://www.lunarvim.org/docs/plugins#user-plugins>
@@ -207,14 +301,8 @@ lvim.plugins = {
 			vim.g.gitblame_date_format = "%r"
 		end,
 	},
-	{
-		"tzachar/cmp-tabnine",
-		build = "./install.sh",
-		dependencies = "hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-	},
+	{ "codota/tabnine-nvim", run = "./dl_binaries.sh" },
 	{ "terryma/vim-multiple-cursors" },
-
 	{ "windwp/nvim-ts-autotag" },
 	{ "ethanholz/nvim-lastplace" },
 	{
@@ -223,6 +311,12 @@ lvim.plugins = {
 		config = function()
 			require("git-conflict").setup()
 		end,
+	},
+	{
+		"ThePrimeagen/harpoon",
+	},
+	{
+		"mbbill/undotree",
 	},
 }
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
