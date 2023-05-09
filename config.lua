@@ -12,10 +12,11 @@ vim.opt.tabstop = 2
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.breakindent = true
--- vim.opt.clipboard = "unnamed"
+
+-- vim.opt.guicursor = "n-v-c-sm:block,ci-ve:ver25,r-cr-o:hor20,i:block-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor"
 -- general
 lvim.log.level = "warn"
-lvim.colorscheme = "catppuccin-mocha"
+lvim.colorscheme = "dracula"
 lvim.format_on_save = {
   enabled = true,
   pattern = "*.lua", --Add more file types to format on save
@@ -38,7 +39,6 @@ lvim.keys.normal_mode["j"] = "gj"
 lvim.keys.normal_mode["k"] = "gk"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-e>"] = ":e!<cr>"
-lvim.keys.normal_mode[";"] = ":"
 
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
@@ -53,41 +53,11 @@ lvim.keys.normal_mode["<leader>p"] = "o<ESC>p"
 lvim.keys.normal_mode["<leader>P"] = "O<ESC>p"
 lvim.keys.normal_mode["<leader>o"] = "o<ESC>"
 lvim.keys.normal_mode["<leader>O"] = "O<ESC>"
-lvim.keys.normal_mode["<leader>ss"] = ":SymbolsOutline<CR>"
--- lvim.keys.normal_mode["<leader>u"] = ":UndotreeToggle<CR>"
--- lvim.keys.normal_mode["<leader>bj"] = ':lua require("harpoon.ui").nav_next()<CR>'
--- lvim.keys.normal_mode["<leader>bk"] = ':lua require("harpoon.ui").nav_prev()<CR>'
--- lvim.keys.normal_mode["<leader>bt"] = ':lua require("harpoon.ui").toggle_quick_menu()<CR>'
--- lvim.keys.normal_mode["<leader>ba"] = ':lua require("harpoon.ui").toggle_quick_menu()<CR>'
--- unmap a default keymapping
--- vim.keymap.del("n", "<C-Up>")
--- override a default keymapping
--- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
+lvim.keys.normal_mode["<leader>sS"] = ":SymbolsOutline<CR>"
+lvim.keys.normal_mode["<leader>u"] = ":UndotreeToggle<CR>"
 
--- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
--- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
--- local _, actions = pcall(require, "telescope.actions")
--- lvim.builtin.telescope.defaults.mappings = {
---   -- for input mode
---   i = {
---     ["<C-j>"] = actions.move_selection_next,
---     ["<C-k>"] = actions.move_selection_previous,
---     ["<C-n>"] = actions.cycle_history_next,
---     ["<C-p>"] = actions.cycle_history_prev,
---   },
---   -- for normal mode
---   n = {
---     ["<C-j>"] = actions.move_selection_next,
---     ["<C-k>"] = actions.move_selection_previous,
---   },
--- }
 
--- Change theme settings
--- lvim.builtin.theme.options.dim_inactive = true
--- lvim.builtin.theme.options.style = "storm"
 
--- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Trouble",
   r = { "<cmd>Trouble lsp_references<cr>", "References" },
@@ -109,6 +79,79 @@ lvim.builtin.which_key.mappings["m"] = {
   m = { "<cmd>lua MiniMap.toggle_focus()<CR>", "Toggle focus" },
   c = { "<cmd>lua MiniMap.toggle()<cr>", "Toggle" },
 }
+lvim.builtin.which_key.mappings["/"] = { "<cmd>nohlsearch<CR>", "No Highlight" }
+lvim.builtin.which_key.mappings[";"] = {}
+
+lvim.builtin.which_key.mappings["s"]["w"] = {
+  "<cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.expand('<cword>') })<cr>",
+  " Search Word Under Cursor"
+}
+lvim.builtin.which_key.mappings["s"]["s"] = {
+  "<cmd>Telescope resume<CR>",
+  "Resume"
+}
+lvim.builtin.which_key.mappings["s"]["p"] = {
+  "<cmd>Telescope projects<CR>",
+  "Projects"
+}
+lvim.builtin.which_key.mappings["h"] = {
+  name = " Harpoon",
+  m = { ":lua require('harpoon.mark').add_file()<cr>", "Mark file" },
+  t = { ":lua require('harpoon.ui').toggle_quick_menu()<cr>", "Toggle UI" },
+  a = { ":lua require('harpoon.ui').nav_file(1)<cr>", "Goto mark 1" },
+  s = { ":lua require('harpoon.ui').nav_file(2)<cr>", "Goto mark 2" },
+  d = { ":lua require('harpoon.ui').nav_file(3)<cr>", "Goto mark 3" },
+  f = { ":lua require('harpoon.ui').nav_file(4)<cr>", "Goto mark 4" },
+  g = { ":lua require('harpoon.ui').nav_file(5)<cr>", "Goto mark 5" },
+  q = { ":lua require('harpoon.ui').nav_file(6)<cr>", "Goto mark 6" },
+  w = { ":lua require('harpoon.ui').nav_file(7)<cr>", "Goto mark 7" },
+  e = { ":lua require('harpoon.ui').nav_file(8)<cr>", "Goto mark 8" },
+  r = { ":lua require('harpoon.ui').nav_file(9)<cr>", "Goto mark 9" },
+  l = { ":lua require('harpoon.ui').nav_next()<cr>", "Next file" },
+  h = { ":lua require('harpoon.ui').nav_prev()<cr>", "Prev file" },
+}
+
+--Keybindings for Hop to work in v,s,d mode
+local default_opts = { noremap = true, silent = true }
+local keymap = function(mode, from, to, opts)
+  if not opts then opts = default_opts end
+  vim.keymap.set(mode, from, to, opts)
+end
+local nkeymap = function(from, to, opts)
+  keymap("n", from, to, opts)
+end
+local hop_ok, hop = pcall(require, 'hop')
+if hop_ok then
+  local directions = require('hop.hint').HintDirection
+  local modes = { 'n', 'o', 'v' }
+  local opts = { remap = true, silent = true }
+  keymap(modes, 'f', function()
+    hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
+  end, opts)
+
+  keymap(modes, 'F', function()
+    hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
+  end, opts)
+
+  keymap(modes, 't', function()
+    hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
+  end, opts)
+
+  keymap(modes, 'T', function()
+    hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
+  end, opts)
+
+  -- nkeymap('s', function()
+  --   hop.hint_char2({ direction = directions.AFTER_CURSOR })
+  -- end, opts)
+
+  -- nkeymap('S', function()
+  --   hop.hint_char2({ direction = directions.BEFORE_CURSOR })
+  -- end, opts)
+end
+
+
+
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
@@ -135,81 +178,17 @@ lvim.builtin.treesitter.ensure_installed = {
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
-
--- generic LSP settings
-
--- -- make sure server will always be installed even if the server is in skipped_servers list
--- lvim.lsp.installer.setup.ensure_installed = {
---     "sumneko_lua",
---     "jsonls",
--- }
--- -- change UI setting of `LspInstallInfo`
--- -- see <https://github.com/williamboman/nvim-lsp-installer#default-configuration>
--- lvim.lsp.installer.setup.ui.check_outdated_servers_on_open = false
--- lvim.lsp.installer.setup.ui.border = "rounded"
--- lvim.lsp.installer.setup.ui.keymaps = {
---     uninstall_server = "d",
---     toggle_server_expand = "o",
--- }
-
--- ---@usage disable automatic installation of servers
--- lvim.lsp.installer.setup.automatic_installation = false
-
--- ---configure a server manually. !!Requires `:LvimCacheReset` to take effect!!
--- ---see the full default list `:lua print(vim.inspect(lvim.lsp.automatic_configuration.skipped_servers))`
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
--- local opts = {} -- check the lspconfig documentation for a list of all possible options
--- require("lvim.lsp.manager").setup("pyright", opts)
-
--- ---`:LvimInfo` lists which server(s) are skipped for the current filetype
--- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
--- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. !!Requires `:LvimCacheReset` to take effect!!
---   return server ~= "emmet_ls"
--- end, lvim.lsp.automatic_configuration.skipped_servers)
-
--- -- you can set a custom on_attach function that will be used for all the language servers
--- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
--- lvim.lsp.on_attach_callback = function(client, bufnr)
---   local function buf_set_option(...)
---     vim.api.nvim_buf_set_option(bufnr, ...)
---   end
---   --Enable completion triggered by <c-x><c-o>
---   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
--- end
-
 -- -- set a formatter, this will override the language server formatting capabilities (if it exists)
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   { command = "black", filetypes = { "python" } },
   { command = "isort", filetypes = { "python" } },
   {
-    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
     command = "prettier",
-    ---@usage arguments to pass to the formatter
-    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
     extra_args = { "--print-with", "100" },
-    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
     filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "css", "scss" },
   },
 }
-
--- -- set additional linters
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
---   {
---     -- each linter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "shellcheck",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--severity", "warning" },
---   },
---   {
---     command = "codespell",
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "javascript", "python" },
---   },
--- }
 
 -- Additional Plugins
 lvim.plugins = {
@@ -267,12 +246,6 @@ lvim.plugins = {
     end,
   },
   {
-    'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'JoosepAlviste/nvim-ts-context-commentstring',
-    },
-  },
-  {
     "tzachar/cmp-tabnine",
     build = "./install.sh",
     dependencies = "hrsh7th/nvim-cmp",
@@ -291,6 +264,9 @@ lvim.plugins = {
   },
   { "catppuccin/nvim",       name = "catppuccin" },
   { "rebelot/kanagawa.nvim", name = "catppuccin" },
+  {
+    "sainnhe/gruvbox-material"
+  },
   {
     "echasnovski/mini.map",
     branch = "stable",
@@ -314,53 +290,72 @@ lvim.plugins = {
           side = 'right',
           width = 8, -- set to 1 for a pure scrollbar :)
           winblend = 15,
-          show_integration_count = false,
         },
+        show_integration_count = false,
+      })
+    end,
+  },
+
+  {
+    'navarasu/onedark.nvim',
+    config = function()
+      require("onedark").setup {
+        transparent = true, style = 'darker' }
+    end
+  },
+  {
+    'Mofiqul/dracula.nvim',
+    config = function()
+      require("dracula").setup({
+        colors = {
+          -- bg = "#1b1d26",
+          selection = "#3a3b42",
+        }
       })
     end
   },
-}
-
--- Autocommands (https://neovim.io/doc/user/autocmd.html)
--- vim.api.nvim_create_autocmd("BufEnter", {
---   pattern = { "*.json", "*.jsonc" },
---   -- enable wrap mode for json files only
---   command = "setlocal wrap",
--- })
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "zsh",
---   callback = function()
---     -- let treesitter use bash highlight for zsh files as well
---     require("nvim-treesitter.highlight").attach(0, "bash")
---   end,
--- })
-lvim.autocommands = {
   {
-    { "BufEnter", "Filetype" },
-    {
-      desc = "Open mini.map and exclude some filetypes",
-      pattern = { "*" },
-      callback = function()
-        local exclude_ft = {
-          "qf",
-          "NvimTree",
-          "toggleterm",
-          "TelescopePrompt",
-          "alpha",
-          "netrw",
-        }
-
-        local map = require('mini.map')
-        if vim.tbl_contains(exclude_ft, vim.o.filetype) then
-          vim.b.minimap_disable = true
-          map.close()
-        elseif vim.o.buftype == "" then
-          map.open()
-        end
-      end,
-    },
+    "APZelos/blamer.nvim",
+    config = function()
+      vim.g.blamer_enabled = 1
+      vim.g.blamer_delay = 300
+      vim.g.blamer_relative_time = 1
+      vim.g.blamer_date_format = '%b %e %H:%M'
+      -- vim.g.blamer_message_template = '<committer>, <committer-time> • <summary>'
+    end,
   },
+  { 'mbbill/undotree' },
+  { "ThePrimeagen/harpoon" },
+  { 'christoomey/vim-tmux-navigator' }
 }
+
+-- lvim.autocommands = {
+--   {
+--     { "BufEnter", "Filetype" },
+--     {
+--       desc = "Open mini.map and exclude some filetypes",
+--       pattern = { "*" },
+--       callback = function()
+--         local exclude_ft = {
+--           "qf",
+--           "NvimTree",
+--           "toggleterm",
+--           "TelescopePrompt",
+--           "alpha",
+--           "netrw",
+--         }
+
+--         local map = require('mini.map')
+--         if vim.tbl_contains(exclude_ft, vim.o.filetype) then
+--           vim.b.minimap_disable = true
+--           map.close()
+--         elseif vim.o.buftype == "" then
+--           map.open()
+--         end
+--       end,
+--     },
+--   },
+-- }
 
 
 lvim.builtin.treesitter.textobjects = {
@@ -369,7 +364,7 @@ lvim.builtin.treesitter.textobjects = {
     set_jumps = true, -- whether to set jumps in the jumplist
     goto_next_start = {
       ["]m"] = "@function.outer",
-      ["]c"] = { query = "@class.outer", desc = "Next class start" },
+      ["]k"] = { query = "@class.outer", desc = "Next class start" },
       --
       -- You can use regex matching (i.e. lua pattern) and/or pass a list in a "query" key to group multiple queires.
       ["]o"] = "@loop.*",
@@ -382,15 +377,15 @@ lvim.builtin.treesitter.textobjects = {
     },
     goto_next_end = {
       ["]M"] = "@function.outer",
-      ["]C"] = "@class.outer",
+      ["]K"] = "@class.outer",
     },
     goto_previous_start = {
       ["[m"] = "@function.outer",
-      ["[c"] = "@class.outer",
+      ["[k"] = "@class.outer",
     },
     goto_previous_end = {
       ["[M"] = "@function.outer",
-      ["[C"] = "@class.outer",
+      ["[K"] = "@class.outer",
     },
     -- Below will go to either the start or the end, whichever is closer.
     -- Use if you want more granular movements
@@ -440,7 +435,29 @@ lvim.builtin.nvimtree.setup.actions.change_dir.enable = false
 --Telescope Conf
 lvim.builtin.telescope.pickers.find_files.find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
 
+--luasnip conf
+require("luasnip").filetype_extend("typescript", { "javascript" })
+
+--Indentation config
+-- lvim.builtin.indentlines.space_char_blankline = " "
+lvim.builtin.indentlines.show_current_context_start = true
+lvim.builtin.indentlines.show_current_context = true
+--
+-- show_current_context_start = true,
+-- }
+
 --lualine config
+-- local components = require "~/.local/share/lunarvim/lvim/lua/lvim.core.lualine.components"
+lvim.builtin.lualine.sections.lualine_c = { 'diff', '%F' }
+lvim.builtin.lualine.sections.lualine_x = { 'diagnostic', 'filetype' }
+
+lvim.builtin.lualine.sections.lualine_y = {}
+lvim.builtin.lualine.sections.lualine_z = {}
+
+--TODO:-
+--Custom console log
+--Add colorful comment plugin
+
 
 --Helpful keybinding
 -- <c-e>  - exit code completion
@@ -449,11 +466,26 @@ lvim.builtin.telescope.pickers.find_files.find_command = { "fd", "--type", "f", 
 -- <leader>Sl - open last session
 -- :norm command to edit miliplt lines at the start or end
 --    Ex - :norm A, -- This will append , on the selected or the current line
--- Telescope jumplist - Show jumplist enterires
--- Telescope command_history - Show command history in neovim terminal
+-- Git conflict keybindings
+--   co — choose ours
+--   ct — choose theirs
+--   cb — choose both
+--   c0 — choose none
+--   [x — move to next conflict
+--   ]x — move to previous conflict
+-- use <C-f> to list down the command history in command mode
 
 
 --Useful plugins or setting for certains tasks
 
 --   diffview - To go through file git history and compare wwith current view. Also use to resolve git conflicts
 --            commands - Diffviewopen
+-- Telescope jumplist - Show jumplist enterires
+-- Telescope command_history - Show command history in neovim terminal
+
+vim.cmd([[
+  augroup CursorColor
+    autocmd!
+    autocmd ColorScheme * highlight Cursor guibg=#a0f75e guifg=black
+  augroup END
+]])
