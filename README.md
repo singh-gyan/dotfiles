@@ -10,3 +10,9 @@ Terminal Emualator(Kitty or alacritty)
 i3:
 install Bubnblebee status
 set the path of the bublebee status in the config file
+
+Other tools I use:
+Lazygit
+Copyq
+Albert
+Power10k theme for zsh
