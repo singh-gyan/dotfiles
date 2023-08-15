@@ -1,0 +1,203 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "yaml.schemas": {
+    "file:///home/abhigyan/.vscode/extensions/atlassian.atlascode-3.0.3/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+  },
+  "editor.wordWrap": "on",
+  "workbench.colorTheme": "One Dark Pro Darker",
+  "editor.fontFamily": "Fira Code",
+  "editor.stickyScroll.enabled": true,
+  "editor.suggest.insertMode": "replace",
+  "errorLens.fontStyleItalic": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.exclude": {
+    "**/node_modules": true
+  },
+  "projectManager.git.baseFolders": ["$home/Desktop"],
+  "projectManager.sortList": "Recent",
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.useSystemClipboard": true,
+  "vim.hlsearch": true,
+  "vim.foldfix": true,
+  "vim.highlightedyank.color": "rgba(230, 97, 89, 0.7)",
+  "vim.highlightedyank.enable": true,
+  "vim.highlightedyank.textColor": "white",
+  "vim.leader": "<Space>",
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["k", "j"],
+      "after": ["<Esc>"]
+    }
+  ],
+  "vim.handleKeys": {
+    "<C-f>": false
+  },
+  "vim.normalModeKeyBindings": [
+    {
+      "before": ["k"],
+      "after": ["g", "k"]
+    },
+    {
+      "before": ["j"],
+      "after": ["g", "j"]
+    }
+  ],
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["d", "d"],
+      "after": ["\"", "_", "d", "d"]
+    },
+    {
+      "before": ["d"],
+      "after": ["\"", "_", "d"]
+    },
+    {
+      "before": ["K"],
+      "after": ["g", "h"]
+    },
+    {
+      "after": ["g", "g", "V", "G"],
+      "before": ["<c-a>"]
+    },
+    {
+      "before": ["u"],
+      "commands": ["undo"]
+    },
+    {
+      "before": ["L"],
+      "commands": [":tabnext"]
+    },
+    {
+      "before": ["H"],
+      "commands": [":tabprev"]
+    },
+    {
+      "before": ["<leader>", "/"],
+      "commands": [":nohl"]
+    },
+    {
+      "before": ["<bs>"],
+      "after": ["\"", "_", "d", "i", "w"]
+    },
+    {
+      "commands": ["projectManager.listGitProjects#sideBarGit"],
+      "before": ["<leader>", "o"],
+      "when": "vim.active && vim.mode!= 'Insert' && editorTextFocus"
+    },
+    {
+      "before": ["<leader>", "e"],
+      "commands": ["workbench.action.toggleSidebarVisibility"],
+      "when": "!terminalFocus && vim.active && vim.mode != 'Insert' && editorTextFocus"
+    },
+    {
+      "before": ["<leader>", "f"],
+      "commands": ["workbench.action.quickOpen"],
+      "when": "editorTextFocus && !terminalFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+      "before": ["<leader>", "q"],
+      "commands": ["editor.action.format"],
+      "when": "editorTextFocus && !terminalFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+      "before": ["<leader>", "x"],
+      "commands": ["workbench.action.closeActiveEditor"],
+      "when": "editorTextFocus && !terminalFocus && vim.active && vim.mode != 'Insert'"
+    },
+    {
+      "before": ["<leader>", "g"],
+      "commands": ["git.checkout"],
+      "when": "editorTextFocus && vim.active && vim.mode!= 'Insert'"
+    },
+    {
+      "before": ["<leader>", "z", "z"],
+      "commands": [ "workbench.action.toggleZenMode" ],
+      "when": "editorTextFocus && vim.active && vim.mode!= 'Insert'"
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": [">"],
+      "commands": ["editor.action.indentLines"]
+    },
+    {
+      "before": ["<"],
+      "commands": ["editor.action.outdentLines"]
+    },
+    {
+      "before": ["p"],
+      "after": ["p", "g", "v", "y"]
+    },
+    {
+      "before": ["d"],
+      "after": ["\"", "_", "d"]
+    },
+    {
+      "before": ["g", "q"],
+      "commands": ["editor.action.format"]
+    }
+  ],
+  "vim.visualstar": true,
+  "vim.highlightedyank.duration": 300,
+  "vim.cursorStylePerMode.insert": "block",
+  "vim.autoindent": true,
+  "vim.surround": true,
+  "vim.sneak": true,
+  "vim.easymotionDimColor": "#777777",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "name": "One Dark italic",
+        "scope": [
+          "comment",
+          "entity.other.attribute-name",
+          "keyword",
+          "markup.underline.link",
+          "storage.modifier",
+          "storage.type",
+          "string.url",
+          "variable.language.super",
+          "variable.language.this"
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "name": "One Dark italic reset",
+        "scope": [
+          "keyword.operator",
+          "keyword.other.type",
+          "storage.modifier.import",
+          "storage.modifier.package",
+          "storage.type.built-in",
+          "storage.type.function.arrow",
+          "storage.type.generic",
+          "storage.type.java",
+          "storage.type.primitive"
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      }
+    ]
+  },
+  "editor.renderControlCharacters": false,
+  "git.confirmSync": false,
+  "git.ignoreRebaseWarning": true,
+  "zenMode.centerLayout": false,
+  "zenMode.hideLineNumbers": false,
+  "zenMode.hideTabs": false,
+  "zenMode.hideStatusBar": false
+}
+
